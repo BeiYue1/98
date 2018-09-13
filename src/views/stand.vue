@@ -13,6 +13,12 @@
             </li>
         </ul>
         <button @click="zf" class="checkstand-zf">立即支付</button>
+        <div class="check-wrapper" v-show="isOk">
+          <div class="wrapper">
+            支付成功
+            <button @click="sure">确定</button>
+          </div>
+        </div>
     </div>
 </template>
 
@@ -23,12 +29,16 @@
             return {
               monly:0,
               ind:0,
+              isOk:false,
               dataList:[{
                 name:'微信支付'
               },{
                 name:'快捷支付'
               }]
             }
+        },
+        computed:{
+          ...mapState(["memberId"])
         },
         methods:{
           setM(){
@@ -41,20 +51,26 @@
             this.$refs.input.value = '';
             this.monly = 0;
           },
+          sure(){
+            this.isOk = false;
+          },
           changeIndex(index){
             this.ind = index;
           },
-          computed:{
-            ...mapState(["memberId"])
-          },
           // TODO:接口报错
           zf(){
-            this.$API.getMonly({
-              amount:'123',
-              memberId:this.memberId
-            }).then( (res) =>{
-              console.log(res);
-            })
+            if(this.monly){
+              this.$API.getMonly({
+                amount:this.monly,
+                memberId:this.memberId
+              }).then( (res) =>{
+                let data = res.data.resCode;
+                if(data === 'success'){
+                  this.isOk = true;
+                }
+              })
+            }
+            
           }
         }
         
@@ -147,5 +163,36 @@
     font-size: 17px;
     color: white;
   }
+  .check-wrapper{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    .wrapper{
+      width: 80%;
+      height: 100px;
+      background-color: white;
+      border-radius: 10px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      font-size: 30px;
+      text-align: center;
+      padding-top: 30px;
+      button{
+        display: block;
+        width: 100px;
+        height: 30px;
+        margin: 10px auto;
+        border-radius: 10px;
+      }
+    }
+  }
 }
+
 </style>

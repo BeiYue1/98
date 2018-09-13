@@ -7,6 +7,9 @@ export default new Vuex.Store({
   state: {
     // 会员id
     memberId:'1',
+
+    //0 成功 1进行中 2失败
+    isSuccess:1,
     // 用户信息
     dataNews:{
       nickname:'高圆圆',

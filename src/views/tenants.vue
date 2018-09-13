@@ -97,16 +97,13 @@
                 }],
                 //联行号
                 valList:[],
-
+                //银行号
+                cratList:null,
                 name:'',
                 idCard:'',
                 tel:'',
                 bankNum:'',
                 bankCard:'',
-
-
-
-
 
                 isYh:false,
                 isSelect:false,
@@ -148,18 +145,26 @@
                 // 获取数据
                 this.isYh = false;
                 this.isSelect = true;
+                this.cratList = this.dataList[this.ind];
             },
             changeIndex(index){
                 this.ind = index;
             },
             findBank(){
                 this.bank = true;
+                this.valList = [];
             },
             hideBank(){
+                
+                if(this.valList.length === 0){
+                    this.bank = false;
+                    return;
+                }
                 this.val1 = '';
                 this.val2 = '';
                 this.bank = false;
-                this.bankNum = this.valList[this.indent].subBankCode;
+                this.bankNum = this.valList[this.indent].subBankCode
+                // }
             },
             changeBank(index){
                 this.indent = index;
@@ -176,22 +181,36 @@
             },
             // TODO:需对接口
             submit(){
-                this.$API.getList({
-                    accountNo:'123',
-                    bankCode:'103-工商银行',
-                    idCard:'430726199408133433',
-                    memberId:2,
-                    merName:'2333',
-                    mobile:'123',
-                    realName:'123',
-                    subBankCode:'123',
-                }).then( (res) =>{
-                   
-                })
+                console.log(this.cratList);
+                if(this.cratList){
+                    let accountNo = this.bankCard;
+                    let bankCode = `${this.cratList.code}-${this.cratList.bankName}`;
+                    let idCard = this.idCard;
+                    let memberId = this.memberId;
+                    let merName = this.dataNews.nickname;
+                    let mobile = this.tel;
+                    let realName = this.name;
+                    let subBankCode = this.bankNum;
+                    this.$API.getList({
+                        accountNo,
+                        bankCode,
+                        idCard,
+                        memberId,
+                        merName,
+                        mobile,
+                        realName,
+                        subBankCode,
+                    }).then( (res) =>{
+                        let data = res.data.resMsg;
+                        alert(data); 
+                    });
+                }else{
+                    alert('请填写正确的信息');
+                }
             }
         },
         computed:{
-            ...mapState(["dataNews","infoNews"]),
+            ...mapState(["dataNews","infoNews","memberId"]),
         },
         mounted(){
             let tenants = document.getElementsByClassName('tenants-yh')[0];

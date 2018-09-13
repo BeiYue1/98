@@ -10,6 +10,7 @@ import Dingding from '../src/views/dingding.vue'
 import News from '../src/views/news.vue'
 import System from '../src/views/system.vue'
 import Bing from '../src/views/bing.vue'
+import Successed from '../src/views/successed.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -59,5 +60,9 @@ export default new Router({
       path:'/bing',  //系统消息
       name:'Bing',
       component:Bing
+    },{
+      path:'/successed',
+      name:'Successed',
+      component:Successed
     }]
 })

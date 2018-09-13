@@ -109,7 +109,7 @@
                   this.isIndex = true;
                   this.authStatus = data.authStatus;
                 }).catch( (res) =>{
-                  alert(res);
+                  // alert(res);
                 })
             }
           }
