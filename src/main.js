@@ -4,8 +4,11 @@ import router from './router'
 import store from './store'
 import '../src/assets/comment.css'
 import API from './api/index'
-import VueJsonp from 'vue-jsonp'
-Vue.use(VueJsonp)
+
+
+
+import VueWechatTitle from 'vue-wechat-title';  
+Vue.use(VueWechatTitle)
 // Vue.http.options.emulateJSON = true;
 Vue.config.productionTip = false;
 Vue.prototype.$API = API;

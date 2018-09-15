@@ -21,48 +21,78 @@ export default new Router({
       name: 'Index',
       component: Index,
       meta: {
-        pageTitle: '主页',
+        title: '主页',
         keepAlive: true
       }
     },{           //认证页
       path: '/tenants',
       name:'Tenants',
-      component:Tenants
+      component:Tenants,
+      meta:{
+        title:'认证'
+      }
     },{         //首页(认证)
       path: '/indent',
       name:'IndentIndex',
-      component:IndentIndex
+      component:IndentIndex,
+      meta:{
+        title:'首页'
+      }
     },{
       path: '/persona', //个人资料
       name:'Persona',
-      component:Persona
+      component:Persona,
+      meta:{
+        title:'个人资料'
+      }
     },{
       path: '/notice', //系统公告
       name:'Notice',
-      component:Notice
+      component:Notice,
+      meta:{
+        title:'系统公告'
+      }
     },{
       path:'/stand',   //收银台
       name:'Stand',
-      component:Stand
+      component:Stand,
+      meta:{
+        title:'收银台'
+      }
     },{
       path:'/ding',   //订单管理
       name:'Dingding',
-      component:Dingding
+      component:Dingding,
+      meta:{
+        title:'订单管理'
+      }
     },{
       path:'/news',   //我的账号
       name:'News',
-      component:News
+      component:News,
+      meta:{
+        title:'我的账号'
+      }
     },{
       path:'/notice/system',  //系统消息
       name:'System',
-      component:System
+      component:System,
+      meta:{
+        title:'系统消息'
+      }
     },{
       path:'/bing',  //系统消息
       name:'Bing',
-      component:Bing
+      component:Bing,
+      meta:{
+        title:'系统消息'
+      }
     },{
       path:'/successed',
       name:'Successed',
-      component:Successed
+      component:Successed,
+      meta:{
+        title:'认证状态'
+      }
     }]
 })

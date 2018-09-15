@@ -123,6 +123,7 @@
             });
         },
         created(){
+            console.log(this.dataNews.authStatus);
             if(Number(this.dataNews.authStatus) === 2){  //已认证
                 this.onoff = false;
             }else{                                          //未认证

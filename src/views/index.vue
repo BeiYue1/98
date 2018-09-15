@@ -60,7 +60,7 @@
             return {
               authStatus:'' , //认证状态 2--认证
               isShow:false,
-              isIndex:true,  //上线需改为false
+              isIndex:false,  //上线需改为false
             }
         },
         beforeRouteLeave(to, from, next) {
@@ -82,6 +82,7 @@
         methods:{
           showWrap(){
             let a = parseFloat(this.authStatus);
+            alert(a);
             if(a === 2){
               this.$router.push('/indent');
             }
