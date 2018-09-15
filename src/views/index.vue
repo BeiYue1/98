@@ -72,7 +72,7 @@
           
         },
         created(){
-          // this.toLoading();
+          this.toLoading();
           this.showWrap();
         },
         mounted(){
