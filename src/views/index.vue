@@ -63,14 +63,10 @@
               isIndex:false,  //上线需改为false
             }
         },
-        beforeRouteLeave(to, from, next) {
-
-          if (to.path === "/indent") {
-              to.meta.keepAlive = false;
-          } else {
-              to.meta.keepAlive = true;
+        beforeRouteEnter (to, from, next) {
+          if(from.path === '/indent'){
+            to.path = '/indent';
           }
-          from.meta.keepAlive = false;
           next();
         },
         mounted(){
