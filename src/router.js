@@ -21,7 +21,7 @@ export default new Router({
       name: 'Index',
       component: Index,
       meta: {
-        title: '主页',
+        title: '首页',
         keepAlive: true
       }
     },{           //认证页

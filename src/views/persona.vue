@@ -5,7 +5,7 @@
                 <li class="tx">
                     <span>头像</span>
                     <div>
-                        <img class="tx-img" :src="myNews.headimgurl" alt="">
+                        <img class="tx-img" :src="dataNews.headimgurl" alt="">
                     </div>
                 </li>
                 <li>
@@ -14,11 +14,11 @@
                 </li>
                 <li>
                     <span>用户昵称</span>
-                    <div>{{ myNews.nickname }} </div>
+                    <div>{{ dataNews.nickname }} </div>
                 </li>
                 <li>
                     <span>手机号</span>
-                    <div> {{ myNews.phone }} </div>
+                    <div> {{ myNews.mobile }} </div>
                 </li>
             </ul>
         </div>
@@ -39,10 +39,10 @@
           ...mapState(["memberId"])
         },
         created(){
-            //TODO:获取用户的实名信息
-            this.$API.getMyNews(this.memberId).then((res) => {
+            let memberId = window.localStorage.memberId;
+            //TODO:缺少手机字段
+            this.$API.getHyNews(memberId).then((res) => {
                 this.myNews = res.data.resObj;
-                console.log(this.myNews);
             }).catch((err) => {
                 console.log(err);
             });

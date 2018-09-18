@@ -61,10 +61,10 @@
                 //TODO:memberID需修改
                 let phone = this.val.trim();
                 let smsCode = this.vals.trim();
-                let memberId = this.memberId;
+                let memberId = window.localStorage.memberId;
                 
                 this.$API.getBingTel({
-                    memberId:'1',
+                    memberId,
                     phone,
                     smsCode
                 }).then( (res) =>{

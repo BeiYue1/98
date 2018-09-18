@@ -39,8 +39,9 @@
           ...mapState(["memberId"])
         },
         created(){
-            // TODO:参数待确定memberID
-            this.$API.getHyNews(this.memberId).then((result) => {
+           
+            let memberId = window.localStorage.memberId;
+            this.$API.getHyNews(memberId).then((result) => {
                 let data = result.data.resObj;
                 this.dataList = data;
             }).catch((err) => {

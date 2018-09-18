@@ -32,22 +32,22 @@
                 <span>商户名</span><em> {{ dataNews.nickname }} </em>
             </li>
             <li>
-                <span>真实姓名</span><input disabled type="text" :value="infoNews.realName">
+                <span>真实姓名</span><input disabled type="text" :value="newsList.realName">
             </li>
             <li>
-                <span>身份证号</span><input disabled type="text" :value="infoNews.idCard"> 
+                <span>身份证号</span><input disabled type="text" :value="newsList.idCard"> 
             </li>
             <li>
-                <span>银行预留手机号</span><input disabled type="text" :value="infoNews.mobile">
+                <span>银行预留手机号</span><input disabled type="text" :value="newsList.mobile">
             </li>
             <li>
-                <span>联行号</span><input disabled type="text" :value="infoNews.bankName">
+                <span>联行号</span><input disabled type="text" :value="newsList.subBankCode">
             </li>
             <li>
-                <span>结算账号</span><input disabled type="text" :value="infoNews.accountNo">
+                <span>结算账号</span><input disabled type="text" :value="newsList.accountNo">
             </li>
             <li class="no-ten">
-                <span>银行名</span><input disabled type="text" :value="infoNews.bankName">
+                <span>银行名</span><input disabled type="text" :value="newsList.bankName">
             </li>
         </ul>
 
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <button class="tenants-btn" @click="findBank" >
+        <button v-show="onoff" class="tenants-btn" @click="findBank" >
             <a href="javaScript:;">查询联行号</a>
         </button>
 
@@ -113,6 +113,7 @@
                 val2:'',
                 indent:0,  //控制联行号
                 bankNum:null,
+                newsList:[], //个人信息
             }
         },
         beforeCreate(){
@@ -123,9 +124,15 @@
             });
         },
         created(){
-            console.log(this.dataNews.authStatus);
             if(Number(this.dataNews.authStatus) === 2){  //已认证
                 this.onoff = false;
+                let memberId = window.localStorage.memberId;
+                this.$API.getHyNews(memberId).then((result) => {
+                    let data = result.data.resObj;
+                    this.newsList = data;
+                }).catch((err) => {
+                    console.log(err);
+                });
             }else{                                          //未认证
                 this.onoff = true;
             }
@@ -137,7 +144,7 @@
                 to.meta.keepAlive = false;
             }
             next();
-            },
+        },
         methods:{
             showYh(){
                 this.isYh = true;
@@ -164,7 +171,7 @@
                 this.val1 = '';
                 this.val2 = '';
                 this.bank = false;
-                this.bankNum = this.valList[this.indent].subBankCode
+                this.bankNum = this.valList[this.indent].subBankCode;
                 // }
             },
             changeBank(index){
@@ -183,11 +190,12 @@
             // TODO:需对接口
             submit(){
                 console.log(this.cratList);
+                let memberId = window.localStorage.memberId;
                 if(this.cratList){
                     let accountNo = this.bankCard;
                     let bankCode = `${this.cratList.code}-${this.cratList.bankName}`;
                     let idCard = this.idCard;
-                    let memberId = this.memberId;
+                    let memberId = memberId;
                     let merName = this.dataNews.nickname;
                     let mobile = this.tel;
                     let realName = this.name;
@@ -202,8 +210,11 @@
                         realName,
                         subBankCode,
                     }).then( (res) =>{
-                        let data = res.data.resMsg;
-                        alert(data); 
+                        let data = res.data;
+                        if( data.resCode === 'success' ){
+                            this.$store.commit('setS',0);
+                            this.$router.push('/successed');
+                        }
                     });
                 }else{
                     alert('请填写正确的信息');
@@ -211,7 +222,7 @@
             }
         },
         computed:{
-            ...mapState(["dataNews","infoNews","memberId"]),
+            ...mapState(["dataNews","memberId"]),
         },
         mounted(){
             let tenants = document.getElementsByClassName('tenants-yh')[0];

@@ -1,7 +1,7 @@
 <template>
     <div class="indent">
         <div class="index-cont">
-            <img src="../assets/img/tx.jpg" alt="">
+            <img :src="dataNews.headimgurl" alt="">
             <div class="index-news">
                 <p>{{ dataNews.nickname }}</p>
                 <p></p>
@@ -53,12 +53,19 @@
         computed:{
             ...mapState(["dataNews","dataInfo","memberId"]),
         },
-        created(){
-            this.$API.getHyNews(this.memberId).then(res =>{
+        beforeRouteLeave(to, from, next){
+            from.meta.keepAlive = true;
+            next();
+        },
+        mounted(){
+            
+            let menberId = window.localStorage.menberId;
+            
+            this.$API.getHyNews(menberId).then(res =>{
                 let data = res.data.resObj;
                 this.$store.commit('setInfo',data);
             })
-            this.$API.getMyNews(this.memberId).then(res =>{
+            this.$API.getMyNews(menberId).then(res =>{
                 let data = res.data.resObj;
                 this.$store.commit('setData',data);
             })

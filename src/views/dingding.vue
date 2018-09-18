@@ -8,7 +8,7 @@
             <li v-for="(item,index) in data" :key="index">
                 <p>{{ item.mchName }}</p>
                 <p>{{ item.createTime }}</p>
-                <span>+{{ item.orderAmount }} </span>
+                <span>{{ item.orderAmount }} </span>
             </li>
             
         </ul>
@@ -32,19 +32,7 @@
                 }],
                 ind:0,
                 // TODO:待定
-                data:[{
-                    mchName:"成功",
-                    createTime:'2017-04-19 11:22',
-                    orderAmount:'+100'
-                },{
-                    mchName:"成功",
-                    createTime:'2017-04-19 12:22',
-                    orderAmount:'+100'
-                },{
-                    mchName:"成功",
-                    createTime:'2017-04-19 13:22',
-                    orderAmount:'+666'
-                }],
+                data:[],
                 allData:[]
             }
         },
@@ -52,10 +40,10 @@
           ...mapState(["memberId"])
         },
         beforeCreate(){
+            let memberId = window.localStorage.memberId;
             for(let i = 0 ; i < 4 ; i++){
-                // TODO:memberID待确定
                 this.$API.getAccount({
-                    memberId:this.memberId,
+                    memberId:memberId,
                     status: i,
                 }).then( (res) =>{
                     let data = res.data.resObj
@@ -64,8 +52,6 @@
                 })
             }
             
-        },
-        mounted(){
         },
         methods:{
             changeIndex(index){

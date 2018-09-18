@@ -34,6 +34,10 @@ export default new Vuex.Store({
     //设置memberID
     setMemberId(state,obj){
       state.memberId = obj.memberId;
+    },
+    //设置状态
+    setS(state,num){
+      state.isSuccess = num;
     }
   },
   actions: {

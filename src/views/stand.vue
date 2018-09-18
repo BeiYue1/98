@@ -57,19 +57,19 @@
           changeIndex(index){
             this.ind = index;
           },
-          // TODO:接口报错
           zf(){
-            if(this.monly){
+              let memberId = window.localStorage.memberId;
               this.$API.getMonly({
                 amount:this.monly,
-                memberId:this.memberId
+                memberId,
               }).then( (res) =>{
-                let data = res.data.resCode;
-                if(data === 'success'){
-                  this.isOk = true;
+                
+                let data = res.data;
+                if( data.resCode === 'success' ){
+                  let url = data.resObj;
+                  window.location.href = url;
                 }
               })
-            }
             
           }
         }

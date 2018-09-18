@@ -22,7 +22,7 @@ export default {
     },
     methods:{
         bank(){
-            alert(1);
+            
             if(this.isSuccess === 0){
                 this.$router.push('/indent')
             } else if( this.isSuccess === 2 ){

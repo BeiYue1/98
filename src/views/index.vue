@@ -64,25 +64,27 @@
             }
         },
         beforeRouteLeave(to, from, next) {
+
+          if (to.path === "/indent") {
+              to.meta.keepAlive = false;
+          } else {
+              to.meta.keepAlive = true;
+          }
           from.meta.keepAlive = false;
           next();
-        },
-        beforeCreate(){
-          // alert(1);
-          
-        },
-        created(){
-          this.toLoading();
-          this.showWrap();
         },
         mounted(){
           let wrap = document.getElementsByClassName('wrap')[0];
           wrap.style.height = window.innerHeight + 'px';
+          let _this = this;
+          setTimeout( () => {
+            _this.isIndex = true;
+          },1000);
         },
         methods:{
           showWrap(){
             let a = parseFloat(this.authStatus);
-            alert(a);
+
             if(a === 2){
               this.$router.push('/indent');
             }
@@ -94,26 +96,7 @@
           toRz(){
             this.$router.push('/bing');
           },
-          toLoading(){
-            let url = window.location.href;
-            let arr = url.split('?code=');
-            if(arr.length === 1){
-                window.location = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfdfcffac7c5fab5b&redirect_uri=${url}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
-            }else{
-                let code = arr[1];
-                let _arr = code.split('&');
-                code = _arr[0];
-                this.$API.getWxNews(code).then( (res) =>{
-                  let data = res.data.resObj;
-                  this.$store.commit('setData',data);
-                  this.$store.commit('setMemberId',data);
-                  this.isIndex = true;
-                  this.authStatus = data.authStatus;
-                }).catch( (res) =>{
-                  // alert(res);
-                })
-            }
-          }
+          
         }
     }
 </script>
