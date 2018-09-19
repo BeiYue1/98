@@ -1,11 +1,11 @@
 <template>
     <div class="tenants">
         <header class="tenants-header">
-            商户认证
+            商户认证<em v-show="isOnoff">(请填写真实用户信息)</em> 
         </header>
-        <ul class="tenants-ul" v-show="onoff">
+        <ul class="tenants-ul" v-show="isOnoff">
             <li>
-                <span>商户名</span><em> {{ dataNews.nickname }} </em>
+                <span>商户名</span><em><input v-model="merName" type="text" placeholder="请输入商户名"></em>
             </li>
             <li>
                 <span>真实姓名</span><input v-model="name" type="text" placeholder="请输入真实姓名">
@@ -17,7 +17,7 @@
                 <span>银行预留手机号</span><input v-model="tel" type="text" placeholder="请输入手机号">
             </li>
             <li>
-                <span>联行号</span><input v-model="bankNum" type="text" placeholder="请输入联行号">
+                <span>联行号</span><input ref="bankNum" @blur="setNum" :value="isBankNum" type="text" placeholder="请输入联行号">
             </li>
             <li>
                 <span>结算账号</span><input v-model="bankCard" type="text" placeholder="请输入结算账号">
@@ -27,9 +27,9 @@
             </li>
         </ul>
 
-        <ul class="tenants-ul tenants-ul-ul" v-show="!onoff">
+        <ul class="tenants-ul tenants-ul-ul" v-show="!isOnoff">
             <li>
-                <span>商户名</span><em> {{ dataNews.nickname }} </em>
+                <span>商户名</span><input disabled type="text" :value="newsList.merName">
             </li>
             <li>
                 <span>真实姓名</span><input disabled type="text" :value="newsList.realName">
@@ -51,34 +51,20 @@
             </li>
         </ul>
 
-        <div class="tenants-yh" v-show="isYh">
+        <div ref="bscroll" class="tenants-yh" v-show="isYh">
+            
             <div class="tenants-yh-ul">
                 <p @click="changeIndex(index)" v-for="(item,index) in dataList" :key="index"> {{ item.bankName }} <i class="noChecked" :class="{ select: ind === index }"></i> </p>
                 <button @click="hideYh"> 确定 </button>
-
             </div>
+            
         </div>
 
-        <button v-show="onoff" class="tenants-btn" @click="findBank" >
+        <button v-show="isOnoff" class="tenants-btn" @click="findBank" >
             <a href="javaScript:;">查询联行号</a>
         </button>
 
-        <div class="findNum" v-show="bank">
-            <div class="findNum-cont">
-                <div> <span>银行</span> <input v-model="val1" placeholder="如：中国农业银行" type="text"> </div>
-                <div> <span>地址</span> <input v-model="val2" placeholder="如：花岗" type="text"></div>
-                <div> <span class="span">联行号</span> <em>
-                        <strong @click="changeBank(index)" :class="{strongSelect:index === indent}" v-for="(item,index) in valList" :key="index"> 
-                            <i>{{ item.branchBankName }}</i> 
-                            <i>{{ item.subBankCode }}</i>
-                        </strong>
-                    </em></div>
-                <div><button @click="query" class="click-btn">点击查询</button><button class="click-btn" @click='hideBank'>确定</button></div>
-                
-            </div> 
-        </div>
-
-        <button class="tenants-btn" @click="submit" v-show="onoff">
+        <button class="tenants-btn" @click="submited" v-show="isOnoff">
             <a href="javaScript:;">提交</a>
         </button>
     </div>
@@ -87,6 +73,7 @@
 <script>
     import { mapState } from 'vuex';
     import jsonp from 'jsonp';
+    import BScroll from "better-scroll";
     export default {
         name:"tenants",
         data () {
@@ -104,6 +91,9 @@
                 tel:'',
                 bankNum:'',
                 bankCard:'',
+                
+                //银行名
+                thisBankName:'工商银行',
 
                 isYh:false,
                 isSelect:false,
@@ -113,7 +103,9 @@
                 val2:'',
                 indent:0,  //控制联行号
                 bankNum:null,
+                merName:'', //商户名
                 newsList:[], //个人信息
+                
             }
         },
         beforeCreate(){
@@ -124,17 +116,19 @@
             });
         },
         created(){
+            console.log(this.isBankNum);
             if(Number(this.dataNews.authStatus) === 2){  //已认证
-                this.onoff = false;
+                this.$store.commit('setOnoff',false);
                 let memberId = window.localStorage.memberId;
                 this.$API.getHyNews(memberId).then((result) => {
                     let data = result.data.resObj;
                     this.newsList = data;
+                   
                 }).catch((err) => {
                     console.log(err);
                 });
-            }else{                                          //未认证
-                this.onoff = true;
+            }else{
+                this.$store.commit('setOnoff',true);
             }
         },
         beforeRouteLeave(to, from, next) {
@@ -148,6 +142,16 @@
         methods:{
             showYh(){
                 this.isYh = true;
+                this.$nextTick(() => {
+                    let bscrollDom = this.$refs.bscroll;
+                
+                    this.aBScroll = new BScroll(bscrollDom,{
+                        click:true,
+                    });
+                }) ;
+            },
+            setNum(){
+                this.$store.commit('setBankNum',this.$refs.bankNum.value);
             },
             hideYh(){
                 // 获取数据
@@ -159,47 +163,20 @@
                 this.ind = index;
             },
             findBank(){
-                this.bank = true;
+                this.$router.push('find/bank');
                 this.valList = [];
             },
-            hideBank(){
-                
-                if(this.valList.length === 0){
-                    this.bank = false;
-                    return;
-                }
-                this.val1 = '';
-                this.val2 = '';
-                this.bank = false;
-                this.bankNum = this.valList[this.indent].subBankCode;
-                // }
-            },
-            changeBank(index){
-                this.indent = index;
-            },
-            // 查询航联号
-            query(){
-                this.$API.getSubBankList({
-                    bankName:this.val1,
-                    keywords:this.val2,
-                }).then( (res) =>{
-                    this.valList = res.data.resObj;
-                    
-                });
-            },
             // TODO:需对接口
-            submit(){
-                console.log(this.cratList);
+            submited(){
                 let memberId = window.localStorage.memberId;
-                if(this.cratList){
-                    let accountNo = this.bankCard;
-                    let bankCode = `${this.cratList.code}-${this.cratList.bankName}`;
-                    let idCard = this.idCard;
-                    let memberId = memberId;
-                    let merName = this.dataNews.nickname;
-                    let mobile = this.tel;
-                    let realName = this.name;
-                    let subBankCode = this.bankNum;
+                let accountNo = this.bankCard;
+                let bankCode = `${this.cratList.code}-${this.cratList.bankName}`;
+                let idCard = this.idCard;
+                let merName = this.merName;
+                let mobile = this.tel;
+                let realName = this.name;
+                let subBankCode = this.isBankNum;
+                if(accountNo && idCard && merName && mobile && realName && subBankCode){
                     this.$API.getList({
                         accountNo,
                         bankCode,
@@ -214,26 +191,36 @@
                         if( data.resCode === 'success' ){
                             this.$store.commit('setS',0);
                             this.$router.push('/successed');
+                        }else{
+                            alert(data.resMsg);         
                         }
-                    });
+                    }).catch( (res) =>{
+                        alert('请填写正确的内容!');
+                    })
                 }else{
-                    alert('请填写正确的信息');
+                    alert('请输入完整的信息!');
                 }
+                
             }
+            
         },
         computed:{
-            ...mapState(["dataNews","memberId"]),
+            ...mapState(["dataNews","memberId","isOnoff","isBankNum"]),
         },
         mounted(){
+            let tenant = document.getElementsByClassName('tenants')[0];
             let tenants = document.getElementsByClassName('tenants-yh')[0];
-            let findNum = document.getElementsByClassName('findNum')[0];
-            findNum.style.height = window.innerHeight + 'px';
+            tenant.style.height = window.innerHeight + 'px';
             tenants.style.height = window.innerHeight + 'px';
+            
         }
     }
 </script>
 
 <style lang="less" scoped>
+.tenants{
+    overflow: hidden;
+}
 .tenants-header{
   height: 30px;
   line-height: 30px;
@@ -282,7 +269,8 @@
       right: 0;
     }
     input{
-      height: 100%;
+      height: 50px;
+      font-size: 15px;
       border: 1px solid transparent;
       vertical-align: top;
     }
@@ -296,9 +284,16 @@
     border-bottom: none;
   }
 }
-.tenants-ul-ul{
-    input{
-        padding-left: 4%;
+.tenants-ul{
+    li{
+        display: flex;
+        span{
+            flex: 1;
+        }
+        input{
+            flex: 2;
+            text-align: right;
+        }
     }
 }
 .tenants-btn{
@@ -324,6 +319,7 @@
     top: 0;
     left: 0;
     width: 100%;
+    overflow: hidden;
     background-color:  rgba(0, 0, 0, 0.3);
     .tenants-yh-ul{
         width: 90%;
@@ -368,18 +364,17 @@
     top: 0;
     left: 0;
     .findNum-cont{
-        width: 80%;
+        padding-left: 20px;
+        padding-right: 20px;
         padding-top: 30px;
         background-color: white;
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        margin: auto;
+        top:100px;
+        left: 12%;
         div{
-            margin-left: 30px;
             margin-bottom: 10px;
+            display: flex;
+            
             span{
                 display: inline-block;
                 width: 3rem;
@@ -387,10 +382,11 @@
                 height: 30px;
                 line-height: 30px;
                 margin-right: 10px;
+                flex: 1;
             }
             em{
-                display: inline-block;
-                width: 191px;
+                flex: 3;
+                padding-left: 10px;
                 min-height: 30px;
                 border: 1px solid #cccccc;
                 strong{
@@ -411,7 +407,8 @@
                 vertical-align: top;
             }
             input{
-                padding-left: 20px;
+                width: 100%;
+                border: none;
             }
         }
          .click-btn{
@@ -422,6 +419,42 @@
             border-radius: 5px;
             margin: 0 10px;
             background-color: orangered;
+        }
+    }
+    .find-bank{
+        font-size: 12px;
+        line-height: 32px;
+        position: relative;
+        .find-bank-bottom{
+            position:absolute;
+            top: 15px ;
+            right: 10px;
+            width: 10px;
+            height: 10px;
+            background: url(../assets/img/商户认证下拉@2x.png) no-repeat;
+            background-size: 100%;
+        }
+        .find-strong{
+            position: absolute;
+            width: 100%;
+            top: 32px;
+            left: -5px;
+            background: #eee;
+            height: 200px;
+            overflow: hidden;
+            strong{
+                display: block;
+                margin: 0;
+            }
+            
+            i{
+                width: 100%;
+                display: block;
+                text-indent:10px;
+                border: 1px solid #cccccc;
+                margin-top: -1px;
+                margin-left: -1px;
+            }
         }
     }
 }

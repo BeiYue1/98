@@ -11,6 +11,7 @@ import News from '../src/views/news.vue'
 import System from '../src/views/system.vue'
 import Bing from '../src/views/bing.vue'
 import Successed from '../src/views/successed.vue'
+import FindBank from '../src/views/findBank.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -93,6 +94,13 @@ export default new Router({
       component:Successed,
       meta:{
         title:'认证状态'
+      }
+    },{
+      path:'/find/bank',
+      name:"FindBank",
+      component:FindBank,
+      meta:{
+        title:"查询银联号"
       }
     }]
 })

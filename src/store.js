@@ -10,9 +10,14 @@ export default new Vuex.Store({
 
     //0 成功 1进行中 2失败
     isSuccess:1,
+    isOnoff:false,
+
+    //联行1号
+    isBankNum:'',
+    
     // 用户信息
     dataNews:{
-      nickname:'高圆圆',
+      nickname:'',
       id:'21',
       phone:'',
       authStatus:'',
@@ -28,6 +33,10 @@ export default new Vuex.Store({
     setData(state,obj){
       state.dataNews = obj;
     },
+    
+    setOnoff(state,onoff){
+      state.isOnoff = onoff;
+    },
     setInfo(state,obj){
       state.infoNews = obj;
     },
@@ -38,6 +47,9 @@ export default new Vuex.Store({
     //设置状态
     setS(state,num){
       state.isSuccess = num;
+    },
+    setBankNum(state,num){
+      state.isBankNum = num;
     }
   },
   actions: {

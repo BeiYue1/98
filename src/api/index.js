@@ -39,6 +39,8 @@ export default {
                       
     getNews: data => $http.get('/api/message/list',{}),  //获取系统消息
 
+    getBankList: data => $http.get('/api/mchReg/bankNameList',{}), //获取银行
+
     getIdNews: data => $http.get(`/api/message/detail/${data}`,{}), //根据ID来获取消息的详细信息
 
     getWxNews: data => $http.get(`/api/index/memberInfo`,{    //商户信息获取

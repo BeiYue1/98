@@ -255,19 +255,25 @@
   background-color: rgba(0,0,0,.5);
   div{
     width: 80%;
-    padding-bottom: 30px;
     padding-top: 30px;
     margin: 230px auto;
     background-color: white;
     text-align: center;
+    border-radius: 10px;
     p{
       color: black;
       font-size: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #cccccc;
     }
     button{
-      width: 50px;
-      height: 30px;
-      margin-top: 20px;
+      width: 100%;
+      height: 50px;
+      font-size: 20px;
+      background-color: orange;
+      color: white;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
     }
   }
 }

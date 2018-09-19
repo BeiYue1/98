@@ -15,7 +15,7 @@ export default {
       }
     },
     created(){
-      this.toLoading();
+      // this.toLoading();
     },
     methods:{
       toLoading(){
@@ -31,6 +31,7 @@ export default {
                 this.$API.getWxNews(code).then( (res) =>{
                   let data = res.data.resObj;
                   this.$store.commit('setData',data);
+                  
                   window.localStorage.setItem('memberId',data.id);
                   this.authStatus = data.authStatus;
                   let a = parseFloat(this.authStatus);

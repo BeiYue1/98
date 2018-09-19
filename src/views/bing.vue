@@ -62,7 +62,7 @@
                 let phone = this.val.trim();
                 let smsCode = this.vals.trim();
                 let memberId = window.localStorage.memberId;
-                
+                // let memberId = 1;
                 this.$API.getBingTel({
                     memberId,
                     phone,
@@ -73,6 +73,8 @@
                     }else{
                         alert(res.data.resMsg);
                     }
+                }).catch( (res) =>{
+                    console.log(res);
                 })
             }
         },
